@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, Tabs, Tab, Typography, Box, Container, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
-import { Alert } from '@material-ui/lab';
+// import { Alert } from '@material-ui/lab';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // const useStyles = makeStyles((theme) => ({
 //   root: {
 //     '& > *': {
@@ -11,7 +13,13 @@ import { Alert } from '@material-ui/lab';
 //     },
 //   },
 // }));
-
+import {
+    BrowserRouter as Router,
+    Route,
+    Link,
+    Switch
+} from 'react-router-dom'
+toast.configure();
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -84,39 +92,93 @@ export default function VerticalTabs() {
   };
 
   function on_login() {
-
-
     const logindata = {
       "email": Login.email,
       "password": Login.password
     };
-
     const url = "https://flutterapiapp.herokuapp.com/login";
-
-
     axios.post(url, logindata, {
-
       "headers": {
-
         "content-type": "application/json",
-
       },
-
     })
       .then(function (response) {
-
         console.log(response.data);
 
+        // toast(response.data.message);
+        if(response.data.message =="Login successful"){
+          toast.success(response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }else{
+          toast.error(response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+        
+
+
+
       })
-
       .catch(function (error) {
-
         console.log(error);
-
       });
+  }
 
+  function on_Register() {
+    const registerdata = {
+      "email": Register.email,
+      "password": Register.password,
+      "name": Register.username,
+      "phone": Register.phone
+    };
+    const url = "https://flutterapiapp.herokuapp.com/register";
+    axios.post(url, registerdata, {
+      "headers": {
+        "content-type": "application/json",
+      },
+    })
+      .then(function (response) {
+        console.log(response.data);
 
-
+        if(response.data.message =="Registered successfully"){
+          toast.success(response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }else{
+          toast.error(response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+       
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   return (
@@ -135,7 +197,7 @@ export default function VerticalTabs() {
       </Tabs>
       <TabPanel value={value} index={0}>
         Login
-        <div style={{ marginTop: "50px" }}>
+        <div style={{ marginTop: "30px" }}>
           <TextField id="outlined-basic" label="Email" variant="outlined"
             value={Login.email}
             onChange={(val) => { setLogin({ ...Login, email: val.target.value }) }}
@@ -162,6 +224,41 @@ export default function VerticalTabs() {
       </TabPanel>
       <TabPanel value={value} index={1}>
         Register
+        <div style={{ marginTop: "30px" }}>
+          <TextField id="outlined-basic" label="Username" variant="outlined"
+            value={Register.username}
+            onChange={(val) => { setRegister({ ...Register, username: val.target.value }) }}
+          />
+        </div>
+        <div style={{ marginTop: "20px" }}>
+          <TextField id="outlined-basic" label="Email" variant="outlined"
+            value={Register.email}
+            onChange={(val) => { setRegister({ ...Register, email: val.target.value }) }}
+          />
+        </div>
+        <div style={{ marginTop: "20px" }}>
+          <TextField id="outlined-basic" label="Phone" variant="outlined"
+            value={Register.phone}
+            onChange={(val) => { setRegister({ ...Register, phone: val.target.value }) }}
+          />
+        </div>
+        <div style={{ marginTop: "20px" }}>
+          <TextField id="outlined-basic" label="Password" variant="outlined"
+            value={Register.password}
+            security={true}
+            onChange={(val) => { setRegister({ ...Register, password: val.target.value }) }}
+          />
+        </div>
+
+        <div style={{ marginTop: "30px" }}>
+          <Button variant="contained" color="secondary"
+            onClick={() => {
+              on_Register()
+            }}
+          >
+            Register
+  </Button>
+        </div>
       </TabPanel>
 
     </div>
